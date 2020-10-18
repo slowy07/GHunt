@@ -93,18 +93,25 @@ def get_hangouts_tokens(cookies, driverpath):
 
 if __name__ == '__main__':
 
-    driverpath = get_driverpath()
-    cookies = get_saved_cookies()
-
+    driverpath  = get_driverPath()
+    cookies_from_file = get_saved_cookies()
+    cookies = {"__Secure-3PSID": "", "APISID": "", "SAPISID": "", "HSID": "", "CONSENT": "YES+FR.fr+V10+BX"}
     ask = True
-    if not cookies:
+    new_cookies_entered = False
+    if not cookies_from_file:
         ask = False
         print("\nEnter these browser cookies found at accounts.google.com :")
-        cookies = {"__Secure-3PSID": "", "APISID": "", "SAPISID": "",
-                   "HSID": "", "CONSENT": "YES+FR.fr+V10+BX"}
         for name in cookies.keys():
             if not cookies[name]:
                 cookies[name] = input(f"{name} => ").strip()
+    else:
+        new_gen_inp = input("\nDo you want to enter new browser cookies from accounts.google.com ? (Y/n) ").lower()
+        if new_gen_inp == "y":
+            new_cookies_entered = True
+            for name in cookies.keys():
+                if not cookies[name]:
+                    cookies[name] = input(f"{name} => ").strip()
+
 
     # validate cookies
     html = get_authorization_source(cookies)
