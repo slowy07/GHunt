@@ -9,6 +9,7 @@ from seleniumwire import webdriver
 import config
 from lib.utils import *
 
+from selenium.common.exceptions import TimeoutException as SE_TimeoutException
 
 def get_saved_cookies():
     ''' returns cookie cache if exists '''
@@ -75,10 +76,14 @@ def get_hangouts_tokens(cookies, driverpath):
 
     tmprinter.out("Waiting for the /v2/people/me/blockedPeople request, it "
                   "can takes a few minutes...")
-    req = driver.wait_for_request('/v2/people/me/blockedPeople', timeout=120)
-    tmprinter.out("Request found !")
-    driver.close()
-    tmprinter.out("")
+    try:
+        req = driver.wait_for_request('/v2/people/me/blockedPeople', timeout=120)
+        tmprinter.out("request found")
+        driver.close()
+        tmprinter.out("")
+    except SE_TimeoutException:
+        tmprinter.out("")
+        exit("\n[!] selenium TimeoutException has occured. please check your internet connection")
 
     auth_token = req.headers["Authorization"]
     hangouts_token = req.url.split("key=")[1]
