@@ -1,3 +1,4 @@
+#!usr/bin/evn python3
 import json
 from os.path import isfile
 from ssl import SSLError
